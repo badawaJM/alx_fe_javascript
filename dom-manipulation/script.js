@@ -75,6 +75,7 @@ async function syncQuoteWithServer(quote) {
         }
         const data = await response.json();
         console.log('Successfully posted quote to server:', data);
+        alert("Quotes synced with server!"); // Notify the user
     } catch (error) {
         console.error('Error syncing quote with server:', error);
     }
@@ -107,6 +108,7 @@ function syncQuotesWithServer(fetchedQuotes) {
         quotes.push(...newQuotes);
         saveQuotes();
         alert(`${newQuotes.length} new quotes added from server.`);
+        alert("Quotes synced with server!"); // Notify the user
     }
 
     handleConflicts(fetchedQuotes);
