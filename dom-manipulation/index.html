@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DOM Manipulation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Quote Generator</title>
 </head>
 <body>
-  <h1 id="main-title">Hello, World!</h1>
-  <button id="change-title">Change Title</button>
+    <h1>Dynamic Quote Generator</h1>
 
-  <script src="script.js"></script>
+    <!-- Display area for the current quote -->
+    <div id="quoteDisplay"></div>
+
+    <!-- Button to show a new random quote -->
+    <button id="newQuote">Show New Quote</button>
+
+    <!-- Form for adding a new quote dynamically -->
+    <div>
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+        <button onclick="addQuote()">Add Quote</button>
+    </div>
+
+    <!-- Buttons for exporting and importing quotes -->
+    <div>
+        <button id="exportJson">Export Quotes</button> <!-- Button for exporting quotes -->
+        <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    </div>
+
+    <!-- Link to the JavaScript file -->
+    <script src="script.js"></script>
 </body>
 </html>
