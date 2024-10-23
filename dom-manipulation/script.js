@@ -1,5 +1,5 @@
 let quotes = [];
-const serverUrl = 'https://jsonplaceholder.typicode.com/posts';
+const serverUrl = 'https://jsonplaceholder.typicode.com/posts'; // Mock API URL
 
 // Function to display a random quote from the array
 function showRandomQuote() {
@@ -38,6 +38,9 @@ function addQuote() {
         document.getElementById('newQuoteCategory').value = '';
         alert('Quote added successfully!');
         showRandomQuote();
+        
+        // Sync new quote with server
+        syncQuoteWithServer(newQuote);
     } else {
         alert('Please enter both the quote text and category.');
     }
@@ -56,6 +59,27 @@ function loadQuotes() {
     }
 }
 
+// Function to sync new quote with the server
+async function syncQuoteWithServer(quote) {
+    try {
+        const response = await fetch(serverUrl, {
+            method: 'POST', // HTTP method for posting data
+            headers: {
+                'Content-Type': 'application/json' // Specify the content type
+            },
+            body: JSON.stringify(quote) // Convert quote to JSON format
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log('Successfully posted quote to server:', data);
+    } catch (error) {
+        console.error('Error syncing quote with server:', error);
+    }
+}
+
 // Function to simulate fetching quotes from a server
 async function fetchQuotesFromServer() {
     try {
@@ -63,8 +87,8 @@ async function fetchQuotesFromServer() {
         const data = await response.json();
 
         const fetchedQuotes = data.map(item => ({
-            text: item.title,
-            category: "General"
+            text: item.title, // Adjust based on your API structure
+            category: "General" // Default category or adapt as needed
         }));
 
         syncQuotesWithServer(fetchedQuotes);
@@ -138,3 +162,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('newQuote').addEventListener('click', showRandomQuote);
     document.getElementById('exportJson').addEventListener('click', exportQuotes);
+    startPeriodicFetching(); // Start periodic fetching
+});
