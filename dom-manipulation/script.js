@@ -1,13 +1,13 @@
-// Wait for the DOM to load before running any script
+// Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
-    // Array to store quotes
-    let quotes = [
+    // Array to store quotes (loaded from localStorage if available)
+    let quotes = JSON.parse(localStorage.getItem('quotes')) || [
         { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
         { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
         { text: "The best way to predict your future is to create it.", category: "Future" }
     ];
 
-    // Get DOM elements
+    // DOM Elements
     const quoteDisplay = document.getElementById('quoteDisplay');
     const newQuoteButton = document.getElementById('newQuote');
     const formContainer = document.createElement('div');
@@ -15,12 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to display a random quote
     function showRandomQuote() {
-        if (quotes.length === 0) return; // Ensure there's at least one quote to display
+        if (quotes.length === 0) return;
         const randomIndex = Math.floor(Math.random() * quotes.length);
         const randomQuote = quotes[randomIndex];
-
-        // Use innerHTML to update the content of the quoteDisplay div
         quoteDisplay.innerHTML = `<span>"${randomQuote.text}"</span><strong> - ${randomQuote.category}</strong>`;
+        sessionStorage.setItem('lastQuote', JSON.stringify(randomQuote)); // Store last displayed quote in sessionStorage
     }
 
     // Function to create the form for adding new quotes
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button id="addQuoteBtn">Add Quote</button>
             </div>
         `;
-        // Attach the add quote function to the button
         document.getElementById('addQuoteBtn').addEventListener('click', addQuote);
     }
 
@@ -42,11 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const quoteCategory = document.getElementById('newQuoteCategory').value.trim();
 
         if (quoteText && quoteCategory) {
-            // Create new quote object and push to array
             const newQuote = { text: quoteText, category: quoteCategory };
             quotes.push(newQuote);
+            localStorage.setItem('quotes', JSON.stringify(quotes)); // Save quotes to localStorage
 
-            // Clear input fields after adding
             document.getElementById('newQuoteText').value = '';
             document.getElementById('newQuoteCategory').value = '';
 
@@ -56,10 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Load last viewed quote from sessionStorage if available
+    const lastViewedQuote = JSON.parse(sessionStorage.getItem('lastQuote'));
+    if (lastViewedQuote) {
+        quoteDisplay.innerHTML = `<span>"${lastViewedQuote.text}"</span><strong> - ${lastViewedQuote.category}</strong>`;
+    } else {
+        showRandomQuote(); // Display a random quote if no session data
+    }
+
     // Event listener for showing a random quote
     newQuoteButton.addEventListener('click', showRandomQuote);
-
-    // Initial setup: Display an initial random quote and create the form
-    showRandomQuote();
-    createAddQuoteForm(); // Call this function to create the form on page load
+    createAddQuoteForm();
 });
